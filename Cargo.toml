@@ -8,4 +8,8 @@ edition = "2021"
 [dependencies]
 [[bin]]
 name = "binaryconvertions"
-path = "src/main.rs"
+path = "src/main/main.rs"
+
+[[test]]
+name = "binaryconvertions"
+path = "src/main/functiontests.rs"
