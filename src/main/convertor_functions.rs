@@ -1,3 +1,5 @@
+use std::default;
+
 pub fn decimal_to_binary_(decimal: i32) -> String {
     let mut binary = String::new();
     let mut n = decimal;
@@ -8,75 +10,84 @@ pub fn decimal_to_binary_(decimal: i32) -> String {
     return binary;
 }
 
-pub fn binary_to_c2(binary: &str) -> String {
-    let mut c1 = String::new();
-    let c2: String = "00000001".to_string(); // solo aplicable para 8 bits
-    for c in binary.chars() {
-        // Invertir bits
-        match c {
-            '0' => c1.push('1'),
-            '1' => c1.push('0'),
-            _ => panic!("Invalid character in binary string"),
-        }
-    }
-    return binary_sum(c1, c2);
+pub fn decimal_to_8bit_binary(decimal: i32) -> String {
+    return format!("{:08b}", decimal); // convierte el número a binario y lo rellena con ceros a la izquierda hasta que tenga 8 bits
 }
 
-pub fn binary_sum(a: String, b: String) -> String {
-    let mut carry = 0;
-    let mut sum = String::new();
-    for (char1, char2) in a.chars().rev().zip(b.chars().rev()) {
-        let bit1 = char1.to_digit(10).unwrap(); // convierte el caracter a un número
-        let bit2 = char2.to_digit(10).unwrap(); // convierte el caracter a un número
-        let result = bit1 + bit2 + carry;
-        // Pushea bits dependiendo del resultado
-        match result {
+fn binary_to_decimal(binary: String) -> i32 {
+    
+    return i32::from_str_radix(&binary, 2).unwrap(); //multiplica cada bit por 2 elevado a la potencia de su posición y suma todos los resultados
+}
+
+pub fn binaryIEEE754_to_decimal(Binary: String) -> f32{
+    let mut mantissa = 0;
+    let mut sign = 1.0;
+    let binary = Binary.chars().collect::<Vec<char>>();
+    let exponent = binary_to_decimal(binary[1..9].iter().collect::<String>()); // usa la funcion de binary_to_decimal para convertir el exponente a decimal
+    let exponent_rest = exponent - 127; // resta 127 al exponente para obtener el exponente real
+
+    if binary.len() == 32 { 
+
+        if binary[0] == '1' {
+            sign = -1.0;
+        }
+
+        match exponent {
             0 => {
-                sum.push('0');
-                carry = 0;
+                return sign * (2.0f32.powf(-126.0)) * ((binary[9..32].iter().enumerate().fold(0.0, |acc, (i, x)| { // lo demismo de abajo aplica, solo se su exponente es -126
+                    if *x == '1' {
+                        acc + 2.0f32.powf((i + 1) as f32 * -1.0)
+                    } else {
+                        acc
+                    }
+                })));
             }
-            1 => {
-                sum.push('1');
-                carry = 0;
+            _default =>{
+                return sign * (2.0f32.powf(exponent_rest as f32)) * (1.0 + (binary[9..32].iter().enumerate().fold(0.0, |acc, (i, x)| { // suma 1 al principio de la mantissa
+                    if *x == '1' {
+                        acc + 2.0f32.powf((i + 1) as f32 * -1.0) // multiplica cada bit por 2 elevado a la potencia de su posición y suma todos los resultados
+                    } else {
+                        acc // si el bit es 0, no suma nada
+                    }
+                })));
             }
-            2 => {
-                sum.push('0');
-                carry = 1;
-            }
-            3 => {
-                sum.push('1');
-                carry = 1;
-            }
-            _ => panic!("Invalid result"),
         }
+
     }
-    return sum.chars().rev().collect::<String>();
+    else {
+        return 0.0;
+    }
 }
 
-pub fn convetor_hexdec(decimal: i32) -> String {
-    let mut hex = String::new();
-    let mut n = decimal;
-    while n > 0 {
-        let residuo = n % 16;
-        if residuo < 10 {
-            hex = format!("{}{}", residuo, hex); // agrega el residuo al inicio de la cadena
-        } else {
-            hex = format!("{}{}", (residuo + 55) as u8 as char, hex); // agrega el residuo al inicio de la cadena, convirtiendo el número a su representación en ASCII
-        }
-        n = n / 16;
-    }
-    return hex;
-}
+pub fn decimalwithpoint_to_binaryIEEE754(decimal: f32) -> String {
+    let mut sign = String::from("0");
+    let exponent = decimal_to_binary_(decimal.floor() as i32);
+    let mut despues_punto = decimal.abs() - decimal.floor();
+    let mut mantissa = String::new();
 
-pub fn convetor_dechex(hex: &str) -> u32 {
-    let mut decimal = 0;
-    for (i, c) in hex.chars().rev().enumerate() {
-        let n = match c.to_digit(16) {
-            Some(n) => n,
-            None => panic!("Invalid character in hex string"),
-        };
-        decimal += n * 16u32.pow(i as u32);
+    if decimal < 0.0 {
+        sign = String::from("1");
     }
-    return decimal;
-}
 
+    /*
+    Hace la operacion para obtener la parte decimal del número en binario
+    */
+    while ((despues_punto - despues_punto.floor()) != 0.0) && mantissa.len() < 23 { 
+        despues_punto *= 2.0;
+        mantissa.push_str(&despues_punto.floor().to_string());
+        despues_punto = despues_punto - despues_punto.floor();
+    }
+
+    let mut normalized = format!("{}{}", exponent, mantissa); // concatena el exponente y la mantissa
+    normalized.insert(1, '.');
+    mantissa = normalized.chars().skip(2).collect(); // quita el punto y el primer bit del exponente para tener la mantissa
+
+    while mantissa.len() < 23 { // rellena la mantissa con ceros hasta que tenga 23 bits
+        mantissa.push('0');
+    }
+
+    let exponent = 127 + exponent.len() as i32 - 1;
+
+    return format!("{}{}{}", sign, decimal_to_8bit_binary(exponent), mantissa);
+
+}

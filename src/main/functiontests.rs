@@ -8,16 +8,11 @@ fn test_decimal_to_binary() {
 }
 
 #[test]
-fn test_binary_to_c2() {
-    assert_eq!(binary_to_c2("11111111"), "00000001");
+fn test_binaryIEEE754_to_decimal(){
+    assert_eq!(binaryIEEE754_to_decimal("11000000000000000000000000000000".to_string()), -2.0);
 }
 
 #[test]
-fn test_binary_sum() {
-    assert_eq!(binary_sum("00000001".to_string(), "00000001".to_string()), "00000010");
-}
-
-#[test]
-fn test_convetor_hexdec() {
-    assert_eq!(convetor_hexdec(255), "FF");
+fn test_decimalwithpoint_to_binaryIEEE754(){
+    assert_eq!(decimalwithpoint_to_binaryIEEE754(5.5), "01000000101100000000000000000000");
 }
