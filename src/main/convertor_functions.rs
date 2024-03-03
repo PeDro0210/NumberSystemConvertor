@@ -60,19 +60,23 @@ pub fn binaryIEEE754_to_decimal(Binary: String) -> f32{
 }
 
 pub fn decimalwithpoint_to_binaryIEEE754(decimal: f32) -> String {
-    let mut sign = String::from("0");
+    let mut sign = String::new();
+
+    if decimal < 0.0 {
+        sign = "1".to_string();
+    } else {
+        sign = "0".to_string();
+    }
+
+    let decimal = decimal.abs();
     let exponent = decimal_to_binary_(decimal.floor() as i32);
     let mut despues_punto = decimal.abs() - decimal.floor();
     let mut mantissa = String::new();
 
-    if decimal < 0.0 {
-        sign = String::from("1");
-    }
-
     /*
     Hace la operacion para obtener la parte decimal del número en binario
     */
-    while ((despues_punto - despues_punto.floor()) != 0.0) && mantissa.len() < 23 { 
+    while ((despues_punto - despues_punto.floor()) != 0.0) && mantissa.len() < 23 {
         despues_punto *= 2.0;
         mantissa.push_str(&despues_punto.floor().to_string());
         despues_punto = despues_punto - despues_punto.floor();
@@ -89,5 +93,4 @@ pub fn decimalwithpoint_to_binaryIEEE754(decimal: f32) -> String {
     let exponent = 127 + exponent.len() as i32 - 1;
 
     return format!("{}{}{}", sign, decimal_to_8bit_binary(exponent), mantissa);
-
 }

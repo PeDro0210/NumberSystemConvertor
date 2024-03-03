@@ -7,7 +7,7 @@ use convertor_functions::*;
 
 fn main() {
 
-    while true {
+    loop {
         println!("1. Convertir un binarioIEEE754 a decimal\n2. Convertir un decimal a binarioIEEE754\n3. Salir\n");
         println!("Ingrese una opción: ");
         let mut option = String::new();
@@ -16,6 +16,7 @@ fn main() {
 
         match option {
             1 => {
+                print!("\x1B[2J\x1B[1;1H");
                 println!("Ingrese un número binarioIEEE754: ");
                 let mut binary = String::new();
                 io::stdin().read_line(&mut binary).expect("Failed to read line");
@@ -23,7 +24,8 @@ fn main() {
                 let decimal = binaryIEEE754_to_decimal(binary);
                 println!("El número decimal es: {}", decimal);
             }
-            2 => { 
+            2 => {
+                print!("\x1B[2J\x1B[1;1H");
                 println!("Ingrese un número decimal: ");
                 let mut decimal = String::new();
                 io::stdin().read_line(&mut decimal).expect("Failed to read line");
