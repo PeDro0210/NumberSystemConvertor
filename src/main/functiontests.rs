@@ -8,11 +8,11 @@ fn test_decimal_to_binary() {
 }
 
 #[test]
-fn test_binaryIEEE754_to_decimal(){
-    assert_eq!(binaryIEEE754_to_decimal("11000000000000000000000000000000".to_string()), -2.0);
+fn test_binaryieee754_to_decimal(){
+    assert_eq!(binaryieee754_to_decimal("11000000000000000000000000000000".to_string()), -2.0);
 }
 
 #[test]
-fn test_decimalwithpoint_to_binaryIEEE754(){
-    assert_eq!(decimalwithpoint_to_binaryIEEE754(5.5), "01000000101100000000000000000000");
+fn test_decimalwithpoint_to_binaryieee754(){
+    assert_eq!(decimalwithpoint_to_binaryieee754(5.5), "01000000101100000000000000000000");
 }

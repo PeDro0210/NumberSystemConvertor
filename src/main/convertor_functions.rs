@@ -1,5 +1,3 @@
-use std::default;
-
 pub fn decimal_to_binary_(decimal: i32) -> String {
     let mut binary = String::new();
     let mut n = decimal;
@@ -19,10 +17,9 @@ fn binary_to_decimal(binary: String) -> i32 {
     return i32::from_str_radix(&binary, 2).unwrap(); //multiplica cada bit por 2 elevado a la potencia de su posición y suma todos los resultados
 }
 
-pub fn binaryIEEE754_to_decimal(Binary: String) -> f32{
-    let mut mantissa = 0;
+pub fn binaryieee754_to_decimal(binarynumber: String) -> f32{
     let mut sign = 1.0;
-    let binary = Binary.chars().collect::<Vec<char>>();
+    let binary = binarynumber.chars().collect::<Vec<char>>();
     let exponent = binary_to_decimal(binary[1..9].iter().collect::<String>()); // usa la funcion de binary_to_decimal para convertir el exponente a decimal
     let exponent_rest = exponent - 127; // resta 127 al exponente para obtener el exponente real
 
@@ -59,8 +56,8 @@ pub fn binaryIEEE754_to_decimal(Binary: String) -> f32{
     }
 }
 
-pub fn decimalwithpoint_to_binaryIEEE754(decimal: f32) -> String {
-    let mut sign = String::new();
+pub fn decimalwithpoint_to_binaryieee754(decimal: f32) -> String {
+    let sign;
 
     if decimal < 0.0 {
         sign = "1".to_string();

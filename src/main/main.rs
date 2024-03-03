@@ -21,7 +21,7 @@ fn main() {
                 let mut binary = String::new();
                 io::stdin().read_line(&mut binary).expect("Failed to read line");
                 let binary = binary.trim().to_string();
-                let decimal = binaryIEEE754_to_decimal(binary);
+                let decimal = binaryieee754_to_decimal(binary);
                 println!("El número decimal es: {}", decimal);
             }
             2 => {
@@ -30,7 +30,7 @@ fn main() {
                 let mut decimal = String::new();
                 io::stdin().read_line(&mut decimal).expect("Failed to read line");
                 let decimal: f32 = decimal.trim().parse().expect("Please type a number!");
-                let binary = decimalwithpoint_to_binaryIEEE754(decimal);
+                let binary = decimalwithpoint_to_binaryieee754(decimal);
                 println!("El número binarioIEEE754 es: {}", binary);
             }
             3 => {
